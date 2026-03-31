@@ -291,43 +291,71 @@ Donate now
 
 <script>
 
+/* Google Apps Script Web App URL */
 const scriptURL =
-"https://script.google.com/macros/s/AKfycby3HPrHEwQXIHStVyDzVvy6hJANAAZrJL2uQrKsv6HeXu0gk8qQBZXpby7SnxIX7uDFgw/exec";
+"
+https:"//script.google.com/macros/s/AKfycbxZveH1eGds1ytXWO9xa-d95du2-v_A4XcfXgXcyizz8r7ivFsE2djKDcXpFYr9erx_Hw/exec";
 
+/* Form element */
 const form = document.getElementById("cn-form");
 
-form.addEventListener("submit",function(e){
+/* Toast message */
+const toast = document.getElementById("cn-toast");
 
-e.preventDefault();
+/* Submit button */
+const submitBtn = document.querySelector(".cn-btn-submit");
 
-const formData = new FormData(form);
+/* Form submit event */
+form.addEventListener("submit", function (e) {
 
-fetch(scriptURL,{
-method:"POST",
-mode:"no-cors",
-body:formData
-})
-.then(()=>{
+  e.preventDefault();
 
-document
-.getElementById("cn-toast")
-.classList.add("show");
+  /* disable button while sending */
+  submitBtn.disabled = true;
+  submitBtn.style.opacity = "0.6";
 
-form.reset();
+  /* collect form data */
+  const formData = new FormData(form);
 
-setTimeout(()=>{
-document
-.getElementById("cn-toast")
-.classList.remove("show");
-},5000);
+  fetch(scriptURL, {
+    method: "POST",
+    mode: "no-cors",
+    body: formData
+  })
 
-})
-.catch(err=>{
-alert("Error submitting form");
-console.error(err);
+  .then(() => {
+
+    /* show success message */
+    toast.classList.add("show");
+
+    /* reset form */
+    form.reset();
+
+    /* hide message after 5s */
+    setTimeout(function () {
+      toast.classList.remove("show");
+    }, 5000);
+
+  })
+
+  .catch(function (error) {
+
+    console.error("Error!", error);
+    alert("Form submission failed.");
+
+  })
+
+  .finally(function () {
+
+    /* enable button again */
+    submitBtn.disabled = false;
+    submitBtn.style.opacity = "1";
+
+  });
+
 });
+```
 
-});
 
 </script>
 
